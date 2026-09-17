@@ -21,6 +21,7 @@
                     <h5> @item.Point </h5>
                     <h5 class="text-success">@item.ZombieType.TypeName</h5>
                     <a asp-action="Edit" asp-route-Id="@item.Id" class="btn btn-info">Edit</a>
+                    <a asp-action="Delete" class="btn btn-danger">Delete</a>
                 </div>
             </div>
         }
