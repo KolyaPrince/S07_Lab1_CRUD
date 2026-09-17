@@ -42,6 +42,7 @@ namespace ZombieParty.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(ZombieVM zombieVM)
         {
             //Si le modèle est valide le zombie est ajouté et nous sommes redirigé vers index.
@@ -59,6 +60,40 @@ namespace ZombieParty.Controllers
             }).OrderBy(t => t.Text);
 
             return View(zombieVM);
+        }
+
+        public IActionResult Edit(int id)
+        {
+            ZombieVM zombieVM = new ZombieVM();
+            zombieVM.Zombie = _baseDonnees.Zombies.Find(id);
+            zombieVM.ZombieTypeSelectList = _baseDonnees.ZombieTypes.Select(t => new SelectListItem
+            {
+                Text = t.TypeName,
+                Value = t.Id.ToString()
+            }).OrderBy(t => t.Text);
+
+            return View(zombieVM);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(ZombieVM zombieVM)
+        {
+            if (ModelState.IsValid)
+            {
+                _baseDonnees.Zombies.Update(zombieVM.Zombie);
+                _baseDonnees.SaveChanges();
+                TempData["Success"] = $"Zombie {zombieVM.Zombie.Name} added";
+                return this.RedirectToAction("Index");
+            }
+            zombieVM.ZombieTypeSelectList = _baseDonnees.ZombieTypes.Select(t => new SelectListItem
+            {
+                Text = t.TypeName,
+                Value = t.Id.ToString()
+            }).OrderBy(t => t.Text);
+
+            return View(zombieVM);
+
         }
     }
 }
